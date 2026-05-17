@@ -32,7 +32,7 @@ jobs:
             -f json \
             -o bandit_report.json \
             --severity-level medium \
-            --exit-zero
+            
         continue-on-error: false
 
       - name: Check for HIGH severity issues
