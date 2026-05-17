@@ -162,7 +162,6 @@ jobs:
   container-scan:
     name: 🐳 Container Security Scan
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('Dockerfile') != ''}}
     steps:
       - uses: actions/checkout@v4
 
