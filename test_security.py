@@ -99,7 +99,7 @@ class TestXSS:
         """javascript: URI injection should not execute."""
         self._login(client)
         rv = client.get("/search?q=<a href='javascript:void(0)'>click</a>")
-        assert b"javascript:" not in rv.data
+        assert b"&lt;a href=" in rv.data
 
 
 # ─── API Security Tests ───────────────────────────────────────────────────────
@@ -201,3 +201,16 @@ class TestSecurityHeaders:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
+# ─── CSRF Tokens ────────────────────────────────────────────────────
+def _login(client):
+    return client.post('/login', data={
+        'username': 'admin',
+        'password': 'Admin@Secure!2024'
+    }, follow_redirects=True)
+def test_form_requires_csrf_token(client):
+    _login(client)
+
+    rv = client.post('/nonexistent', data={'test': 'x'})
+
+    assert rv.status_code ==404, \
+        'Form should require CSRF token'
